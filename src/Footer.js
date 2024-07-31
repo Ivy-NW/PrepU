@@ -75,9 +75,6 @@ function Footer() {
         <SocialIconLink href="/weath">
           <FaCloud />
         </SocialIconLink>
-        <SocialIconLink href="/Notify">
-          <FaHandPaper />
-        </SocialIconLink>
       </SocialLinks>
     </FooterContainer>
   );

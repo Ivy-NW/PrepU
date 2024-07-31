@@ -5,31 +5,54 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 import osm from "./osm-providers";
-
 import cities from "./cities.json";
 import Navbar from "./components/Nav/Navbar";
 import Footer from "./Footer";
 
-const markerIcon = new L.Icon({
-  iconUrl: require("./assets/marker.png"),
-  iconSize: [40, 40],
-  iconAnchor: [17, 46], //[left/right, top/bottom]
-  popupAnchor: [0, -46], //[left/right, top/bottom]
-});
+// Define marker icons for different facility types
+const markerIcons = {
+  Shelter: new L.Icon({
+    iconUrl: require("./assets/marker.png"),
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -40],
+  }),
+  Hospital: new L.Icon({
+    iconUrl: require("./assets/marker.png"),
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -40],
+  }),
+  Firehouse: new L.Icon({
+    iconUrl: require("./assets/marker.png"),
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -40],
+  }),
+  "Police Station": new L.Icon({
+    iconUrl: require("./assets/marker.png"),
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -40],
+  })
+};
 
 const MarkersMap = () => {
-  const [center, setCenter] = useState({ lat: 13.084622, lng: 80.248357 });
-  const ZOOM_LEVEL = 9;
+  const [center, setCenter] = useState({ lat: -1.286389, lng: 36.817223 }); // Center of Kenya
+  const ZOOM_LEVEL = 6; // Adjust zoom level to cover Kenya
   const mapRef = useRef();
+
+  // Define facility types
+  const facilityTypes = ['Shelter', 'Hospital', 'Firehouse', 'Police Station'];
 
   return (
     <div className="App">
-      <Navbar/>
+      <Navbar />
       <>
         <div className="mb-3">
           <div className="text-center">
-            <h1 style={{ color: "#1a2a6c" }}>Emergency Shelters</h1>
-            <p style={{ color: "#1a2a6c" }}>Nearest Disaster Shelters in case of Emergency</p>
+            <h1 style={{ color: "#1a2a6c" }}>Emergency Facilities in Kenya</h1>
+            <p style={{ color: "#1a2a6c" }}>Nearest emergency facilities across Kenya</p>
             <div>
               <Map center={center} zoom={ZOOM_LEVEL} ref={mapRef} style={{ height: "70vh" }}>
                 <TileLayer
@@ -37,26 +60,27 @@ const MarkersMap = () => {
                   attribution={osm.maptiler.attribution}
                 />
 
-                {cities.map((city, idx) => (
-                  <Marker
-                    position={[city.lat, city.lng]}
-                    icon={markerIcon}
-                    key={idx}
-                  >
-                    <Popup>
-                      <b>
-                        {city.city}, {city.country}
-                      </b>
-                    </Popup>
-                  </Marker>
+                {facilityTypes.map(type => (
+                  cities.filter(city => city.type === type).map((city, idx) => (
+                    <Marker
+                      position={[city.lat, city.lng]}
+                      icon={markerIcons[city.type]}
+                      key={idx}
+                    >
+                      <Popup>
+                        <b>{city.name}</b><br />
+                        {city.type}
+                      </Popup>
+                    </Marker>
+                  ))
                 ))}
+
               </Map>
             </div>
           </div>
         </div>
       </>
-
-    <Footer/>
+      <Footer />
     </div>
   );
 };
